@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 const CountryDetails = () => {
 	const { name } = useParams()
 	const [country, setCountry] = useState ([])
+	const [loading, setLoading] = useState (false)
 
 	const { flag, nativeName, population, region, subregion, capital, topLevelDomain, currencies, languages, borders } = country;
 
@@ -15,7 +16,7 @@ const CountryDetails = () => {
 	const fetchBorderCountries = async (borders) => {
 		let borderStr = borders.toString();
 		let newBorder = borderStr.replace(/,/g, ";");
-		if(borders.length == 0) return
+		if(borders.length === 0) return
 		const fetchData = await fetch(`https://restcountries.eu/rest/v2/alpha?codes=${newBorder}&fields=name;alpha3Code`)
 		return await fetchData.json();
 	}
@@ -26,9 +27,12 @@ const CountryDetails = () => {
 		countryDetails.borders = countryBorders;
 		let details = countryDetails;
 		setCountry(details);
+		setLoading(true);
+
 	}
 
 	useEffect(() => {
+		setLoading(false);
 		setDetails();
 	}, [name])
 
@@ -39,6 +43,7 @@ const CountryDetails = () => {
 			</div>
 
 		{
+			loading ?
 				country ?
 
 			<div className="card card-lg card-horizontal">
@@ -47,7 +52,7 @@ const CountryDetails = () => {
                 </div>
                 <div className="card-content">
 	                <div className="card-body">
-	                    <h2 className="card-title"> { name } </h2>
+	                    <h2 className="card-title"> { country.name } </h2>
 						<span> Native name: { nativeName } </span>
 	                    <span> Population: { population } </span>
 	                    <span>Region: { region } </span>
@@ -80,23 +85,31 @@ const CountryDetails = () => {
 	                <div className="card-footer">
 	                	<div className="tags">
 		                    <p className="tags-title"> Border Countries: </p>
-		                    <div>
+		                    <div className="tags-list">
+													<ul>
+
 								{	
 									borders ?
 										borders.slice(0, 3).map((value, index) => { 
 												return (
-													<Link key={index} className="btn tags-btn rounded shadow-overlay" to={`/country/${value.alpha3Code}`}>
+													<li key={index} >
+													<Link className="btn tags-btn rounded shadow-overlay" to={`/country/${value.alpha3Code}`}>
 														<span> {value.name} </span>
 													</Link>
+
+													</li>
 												)
 										})
 									: <span> N/A </span>	
 								}
+																					</ul>
+
 		                    </div> 
 		                </div>
 	                </div>
 	            </div>    
 			</div> : <span> No Country Found </span>
+			 : <span> Loading </span>
 		}
 		</div>
 	)

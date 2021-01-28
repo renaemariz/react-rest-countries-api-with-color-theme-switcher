@@ -12,15 +12,19 @@ const CountryList = () => {
 	const [input, setInput] = useState('')
 
 	const [option, setOption] = useState('')
+	const [loading, setLoading] = useState (false)
+
 
 	let debounce = 200;
 	const handleOnChange = (input) => {
+		setLoading(false)
 		clearTimeout(debounce);
 		debounce = setTimeout( async() => {
 			if(input) {
 				const fetchData = await fetch(`https://restcountries.eu/rest/v2/name/${input}`);
 				const data =  await fetchData.json();
 				setCountryList(data);
+				setLoading(true)
 			} else {
 				fetchAllCountries();
 			}
@@ -28,11 +32,13 @@ const CountryList = () => {
 	}
 
 	const fetchAllCountries = () => {
+		setLoading(false)
 		fetch("https://restcountries.eu/rest/v2/all")
 	      .then(res => res.json())
 	      .then(
 	        (result) => {
 	        	setCountryList(result)
+	        	setLoading(true)
 	        },
 	        // Note: it's important to handle errors here
 	        // instead of a catch() block so that we don't swallow
@@ -44,11 +50,13 @@ const CountryList = () => {
 	}
 
 	useEffect(() => {
+		setLoading(false)
 	    fetchAllCountries()
 	}, [])
 
 
 	const handleDropdownOnChange = (option) => {
+		setLoading(false)
 	     setOption(option)
 
 	     if (option === "all") {
@@ -62,6 +70,7 @@ const CountryList = () => {
 	      .then(
 	        (result) => {
 	        	setCountryList(result)
+	        	setLoading(true)
 	        },
 	        // Note: it's important to handle errors here
 	        // instead of a catch() block so that we don't swallow
@@ -78,18 +87,23 @@ const CountryList = () => {
 				<SearchBar input={input} handleOnChange={handleOnChange} />
 				<Dropdown option={option} handleDropdownOnChange={handleDropdownOnChange} />
 			</div>
-			<div className="table-main space-evenly">
 			{
-				countrylist.length ?
-					countrylist.map((value, index) => {
-					return (
-						<div className="col" key={index}>
-							<CountryItem  index={index} value={value} to={`/country/${value.alpha3Code}`} />
-						</div>
-					)
-				}) : <span> No Countries Found </span>
+				loading ?
+				<div className="table-main">
+				{
+
+					countrylist.length ?
+						countrylist.map((value, index) => {
+						return (
+							<div className="col" key={index}>
+								<CountryItem  index={index} value={value} to={`/country/${value.alpha3Code}`} />
+							</div>
+						)
+					}) : <span> No Countries Found </span>
+				}
+				</div>
+				: <span> Loading </span>
 			}
-			</div>
 		</div>
 	)
 }
