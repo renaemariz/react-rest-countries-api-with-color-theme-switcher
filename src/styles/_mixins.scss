@@ -1,0 +1,13 @@
+/*MIXINS*/
+@mixin elementColors($background, $color) {
+  .navbar-main,
+  .searchbar-input,
+  .searchbar-btn i,
+  input::placeholder,
+  select,
+  .btn,
+  .table-main .card, .card .tags-btn, a{
+    background: $background;
+    color: $color;
+  }
+}

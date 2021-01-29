@@ -51,15 +51,18 @@ const CountryDetails = () => {
 			    	<img src={flag} alt="flag" />
                 </div>
                 <div className="card-content">
+	                <h2 className="card-title"> { country.name } </h2>
 	                <div className="card-body">
-	                    <h2 className="card-title"> { country.name } </h2>
-						<span> Native name: { nativeName } </span>
-	                    <span> Population: { population } </span>
-	                    <span>Region: { region } </span>
-	                    <span>Sub Region: {subregion}</span>
-	                    <span>Capital: { capital } </span>
-	                    <span>Top Level Domain: { topLevelDomain } </span>
-	                    <span> Currencies:
+	                	<div className="row">
+						<span> <strong>Native name:</strong> { nativeName } </span>
+	                    <span> <strong>Population:</strong> { population } </span>
+	                    <span> <strong>Region: </strong>{ region } </span>
+	                    <span> <strong>Sub Region: </strong> {subregion}</span>
+	                    <span> <strong>Capital: </strong> { capital } </span>
+	                    </div>
+	                    <div className="row">
+	                    <span> <strong>Top Level Domain: </strong> { topLevelDomain } </span>
+	                    <span> <strong>Currencies: </strong>
 							{	
 								currencies ?
 								currencies.map((value, index) => { 
@@ -70,7 +73,7 @@ const CountryDetails = () => {
 								: <span> N/A </span>	
 							}
 	                	</span>
-	                    <span> Languages: 
+	                    <span> <strong>Languages: </strong>
 							{	
 								languages ?
 								languages.map((value, index) => { 
@@ -80,11 +83,12 @@ const CountryDetails = () => {
 								})
 								: <span> N/A </span>	
 							}
-	                	</span>	                	
+	                	</span>
+	                	</div>               	
 	                </div>
 	                <div className="card-footer">
 	                	<div className="tags">
-		                    <p className="tags-title"> Border Countries: </p>
+		                    <p className="tags-title"> <strong> Border Countries: </strong> </p>
 		                    <div className="tags-list">
 													<ul>
 

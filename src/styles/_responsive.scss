@@ -1,0 +1,40 @@
+/*RESPONSIVE MEDIA QUERIES*/
+
+@media screen and (max-width : 992px) {
+  .col {
+    width: 33%;
+  }
+
+  .card-horizontal {
+    flex-direction: column;
+    
+    .card-body {
+      flex-direction: column;
+    }
+  }
+}
+
+
+@media screen and (max-width : 768px) {
+  .container {
+    width: 80%;
+  }
+  .col {
+    width: 50%;
+  }
+}
+
+@media screen and (max-width : 485px) {
+  .col {
+    width: 100%;
+  }
+
+  .searchbar {
+    width: 100%;
+
+    &-input{
+      width: 100%;
+      margin-bottom: 1em;
+    }
+  }
+}

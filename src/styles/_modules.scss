@@ -1,0 +1,111 @@
+/*MODULES*/
+.app-main {
+  height: 100%;
+  transition: 400ms;
+  min-height: 100vh;
+}
+
+.table-main {
+  display: flex;
+  flex-direction: column;
+  flex-flow: wrap;
+  margin-top: 2rem;
+  margin-left: -1.5rem;
+  margin-right: -1.5rem;
+}
+
+.dropdown-select {
+  display: flex;
+  padding: 1em;
+  border-radius: 5px;
+}
+
+.searchbar {
+  position: relative;
+  
+  &-input {
+    padding-left: 3em;
+    padding-top: 1em;
+    padding-right: 1em;
+    padding-bottom: 1em;
+  }
+
+  &-btn {
+    border: none;
+    background: none;
+    padding: 1em 1.5em;
+    text-align: right;
+    position: absolute;
+    padding: 1em;
+  }
+}
+
+.tags {
+  display: flex;
+  flex-flow: wrap;
+  padding: 1em 0;
+  align-items: center;
+
+  &-title {
+    margin-right: 10px;
+  }
+}
+
+.card {
+  display: flex;
+  overflow: hidden;
+  flex-flow: wrap;
+  width: 100%;
+
+  &-title {
+    font-weight: 800;
+    margin: 0;
+    margin-bottom: 1em;
+  }
+
+  &-image {
+    flex: 1;
+    height: 150px;
+
+    img {
+      object-fit: cover;
+      height: inherit;
+    }
+  }
+  &-content {
+    flex: 1;
+    padding: 1rem;
+  }
+  &-body {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5em;
+  }
+
+  &-horizontal {
+    display: flex;
+    .card-body {
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 0;      
+    }
+
+    .row {
+      flex-direction: column;
+    }
+    
+  }
+
+  &-lg {
+    width: 100%;
+  
+    .card-image {
+        height: 350px;
+        max-width: 500px;
+      img {
+        object-fit: contain;
+        height: inherit;
+      }
+    }
+  }
+}
