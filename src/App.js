@@ -5,7 +5,6 @@ import CountryList from './components/CountryList'
 import CountryDetails from	'./components/CountryDetails'
 import Navbar from './components/Navbar'
 
-
 const App = () => {
 	const [isDarkMode, setIsDarkMode] = useState(false)
 	const handleDarkMode = () => {

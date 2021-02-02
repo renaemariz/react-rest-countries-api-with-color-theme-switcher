@@ -1,0 +1,18 @@
+/*THEMES*/
+.app-main[data-theme="dark"] {
+  background: $dark-mode-blue;
+  color: $white;
+
+  @include elementColors($dark-blue, $white);
+}
+
+.app-main[data-theme="light"] {
+  background-color: $light-gray;
+  color: $very-dark-blue;
+
+  .fa-moon { 
+    font-weight: 400;
+  }
+
+  @include elementColors($light-gray, $very-dark-blue );
+}

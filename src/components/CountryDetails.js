@@ -1,34 +1,55 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import Loading from './Loading'
 
 const CountryDetails = () => {
 	const { name } = useParams()
 	const [country, setCountry] = useState ([])
+	const [loading, setLoading] = useState (false)
 
 	const { flag, nativeName, population, region, subregion, capital, topLevelDomain, currencies, languages, borders } = country;
 
-	const fetchCountryDetails = async () => {
-		const fetchData = await fetch(`https://restcountries.eu/rest/v2/alpha/${name}`);
-		return await fetchData.json();
-	}
-
-	const fetchBorderCountries = async (borders) => {
-		let borderStr = borders.toString();
-		let newBorder = borderStr.replace(/,/g, ";");
-		if(borders.length == 0) return
-		const fetchData = await fetch(`https://restcountries.eu/rest/v2/alpha?codes=${newBorder}&fields=name;alpha3Code`)
-		return await fetchData.json();
-	}
-
-	const setDetails = async () => {
-		const countryDetails = await fetchCountryDetails();
-		const countryBorders = await fetchBorderCountries(countryDetails.borders);
-		countryDetails.borders = countryBorders;
-		let details = countryDetails;
-		setCountry(details);
-	}
-
 	useEffect(() => {
+		setLoading(false);
+
+		const setDetails = async () => {
+			const countryDetails = await fetchCountryDetails();
+			const countryBorders = await fetchBorderCountries(countryDetails.borders);
+			countryDetails.borders = countryBorders;
+			let details = countryDetails;
+			setCountry(details);
+			setLoading(true);
+		}
+
+		const fetchCountryDetails = async () => {
+			try {
+		      const res = await fetch(`https://restcountries.eu/rest/v2/alpha/${name}`);
+		      if (res.ok) {
+		      	 return await res.json()
+		       } else {
+			    throw new Error('Something went wrong')
+			  }
+		    } catch (e) {
+		    	console.log(e)
+		    }
+		}
+
+		const fetchBorderCountries = async (borders) => {
+			if(borders.length === 0) return
+			let borderStr = borders.toString()
+			let newBorder = borderStr.replace(/,/g, ";")
+			try {
+		      const res = await fetch(`https://restcountries.eu/rest/v2/alpha?codes=${newBorder}&fields=name;alpha3Code`);
+		      if (res.ok) {
+		      	 return await res.json();
+		       } else {
+			    throw new Error('Something went wrong');
+			  }
+		    } catch (e) {
+		    	console.log(e)
+		    }
+		}
+
 		setDetails();
 	}, [name])
 
@@ -39,6 +60,7 @@ const CountryDetails = () => {
 			</div>
 
 		{
+			loading ?
 				country ?
 
 			<div className="card card-lg card-horizontal">
@@ -46,15 +68,18 @@ const CountryDetails = () => {
 			    	<img src={flag} alt="flag" />
                 </div>
                 <div className="card-content">
+	                <h2 className="card-title"> { country.name } </h2>
 	                <div className="card-body">
-	                    <h2 className="card-title"> { name } </h2>
-						<span> Native name: { nativeName } </span>
-	                    <span> Population: { population } </span>
-	                    <span>Region: { region } </span>
-	                    <span>Sub Region: {subregion}</span>
-	                    <span>Capital: { capital } </span>
-	                    <span>Top Level Domain: { topLevelDomain } </span>
-	                    <span> Currencies:
+	                	<div className="row">
+							<span> <strong>Native name:</strong> { nativeName } </span>
+		                    <span> <strong>Population:</strong> { population } </span>
+		                    <span> <strong>Region: </strong>{ region } </span>
+		                    <span> <strong>Sub Region: </strong> {subregion}</span>
+		                    <span> <strong>Capital: </strong> { capital } </span>
+	                    </div>
+	                    <div className="row">
+		                    <span> <strong>Top Level Domain: </strong> { topLevelDomain } </span>
+		                    <span> <strong>Currencies: </strong>
 							{	
 								currencies ?
 								currencies.map((value, index) => { 
@@ -64,39 +89,46 @@ const CountryDetails = () => {
 								})
 								: <span> N/A </span>	
 							}
-	                	</span>
-	                    <span> Languages: 
-							{	
-								languages ?
-								languages.map((value, index) => { 
-									return (
-										<span key={index}>{ (index ? ', ' : ' ')+value.name }</span>
-									)
-								})
-								: <span> N/A </span>	
-							}
-	                	</span>	                	
+		                	</span>
+		                    <span> <strong>Languages: </strong>
+								{	
+									languages ?
+									languages.map((value, index) => { 
+										return (
+											<span key={index}>{ (index ? ', ' : ' ')+value.name }</span>
+										)
+									})
+									: <span> N/A </span>	
+								}
+		                	</span>
+	                	</div>               	
 	                </div>
 	                <div className="card-footer">
 	                	<div className="tags">
-		                    <p className="tags-title"> Border Countries: </p>
-		                    <div>
+		                    <p className="tags-title"> <strong> Border Countries: </strong> </p>
+		                    <div className="tags-list">
+								<ul>
 								{	
 									borders ?
 										borders.slice(0, 3).map((value, index) => { 
 												return (
-													<Link key={index} className="btn tags-btn rounded shadow-overlay" to={`/country/${value.alpha3Code}`}>
+													<li key={index} >
+													<Link className="btn tags-btn rounded shadow-overlay" to={`/country/${value.alpha3Code}`}>
 														<span> {value.name} </span>
 													</Link>
+
+													</li>
 												)
-										})
+										}) 
 									: <span> N/A </span>	
 								}
+								</ul>
 		                    </div> 
 		                </div>
 	                </div>
 	            </div>    
 			</div> : <span> No Country Found </span>
+			 : <Loading />
 		}
 		</div>
 	)

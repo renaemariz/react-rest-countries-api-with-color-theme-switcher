@@ -1,76 +1,59 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-
 import SearchBar from './Searchbar'
 import Dropdown from './Dropdown'
 import CountryItem from './CountryItem'
-
+import Loading from './Loading'
 
 const CountryList = () => {
 	const [countrylist, setCountryList] = useState ([])
-
 	const [input, setInput] = useState('')
-
 	const [option, setOption] = useState('')
+	const defaultUrl = `https://restcountries.eu/rest/v2/all`
+	const [url, setUrl] = useState(defaultUrl)
+	const [loading, setLoading] = useState (false)
 
-	let debounce = 200;
+	//set debounce default value first before clearing and adding a new timeout
+	let debounce = 1;
 	const handleOnChange = (input) => {
 		clearTimeout(debounce);
-		debounce = setTimeout( async() => {
-			if(input) {
-				const fetchData = await fetch(`https://restcountries.eu/rest/v2/name/${input}`);
-				const data =  await fetchData.json();
-				setCountryList(data);
-			} else {
-				fetchAllCountries();
-			}
-		}, 1000);
+		if (!input) return setUrl(defaultUrl);
+		debounce = setTimeout(() => {
+				setOption("all")
+				setInput(input)
+				setUrl(`https://restcountries.eu/rest/v2/name/${input}`)
+		}, 2000);
 	}
 
-	const fetchAllCountries = () => {
-		fetch("https://restcountries.eu/rest/v2/all")
-	      .then(res => res.json())
-	      .then(
-	        (result) => {
-	        	setCountryList(result)
-	        },
-	        // Note: it's important to handle errors here
-	        // instead of a catch() block so that we don't swallow
-	        // exceptions from actual bugs in components.
-	        (error) => {
-	          console.log(error)
-	        }
-	      )
+	const handleDropdownOnChange = (option) => {
+		setLoading(false)
+	    setInput('')
+	    setOption(option)
+	   	if(option === "all") return setUrl(defaultUrl);
+	    setUrl(`https://restcountries.eu/rest/v2/region/${option}`)
 	}
 
 	useEffect(() => {
-	    fetchAllCountries()
-	}, [])
+		const fetchCountries = async() => {
+			setLoading(false)
+			try {
+		      const res = await fetch(url);
+		      let data;
+		      if (res.ok) {
+		      	 data = await res.json();
+		      	 		setCountryList(data);
+						setLoading(true)
+		       } else {
+			    throw new Error('Something went wrong');
+			  }
+		    } catch (e) {
+		    	setCountryList('');
+		    	setLoading(true);
+		    	console.log(e)
+		    }
+		}
 
-
-	const handleDropdownOnChange = (option) => {
-	     setOption(option)
-
-	     if (option === "all") {
-	     	fetchAllCountries() 
-	     	return
-	     }
-
-	     const url = `https://restcountries.eu/rest/v2/region/${option}`
-	     fetch(url)
-	     .then(res => res.json())
-	      .then(
-	        (result) => {
-	        	setCountryList(result)
-	        },
-	        // Note: it's important to handle errors here
-	        // instead of a catch() block so that we don't swallow
-	        // exceptions from actual bugs in components.
-	        (error) => {
-	          console.log(error)
-	        }
-	      )
-	}
+	    fetchCountries()
+	}, [url])
 
 	return (
 		<div className="countrylist-main">
@@ -78,18 +61,22 @@ const CountryList = () => {
 				<SearchBar input={input} handleOnChange={handleOnChange} />
 				<Dropdown option={option} handleDropdownOnChange={handleDropdownOnChange} />
 			</div>
-			<div className="table-main space-evenly">
 			{
-				countrylist.length ?
-					countrylist.map((value, index) => {
-					return (
-						<div className="col" key={index}>
-							<CountryItem  index={index} value={value} to={`/country/${value.alpha3Code}`} />
-						</div>
-					)
-				}) : <span> No Countries Found </span>
+				loading ?
+				<div className="table-main">
+				{
+					countrylist.length ?
+						countrylist.map((value, index) => {
+						return (
+							<div className="col" key={index}>
+								<CountryItem  index={index} value={value} to={`/country/${value.alpha3Code}`} />
+							</div>
+						)
+					}) : <div className="col"><h3> No Countries Found </h3> </div>
+				}
+				</div>
+				: <div className="col mt-2 mx-n1"><Loading /></div>
 			}
-			</div>
 		</div>
 	)
 }

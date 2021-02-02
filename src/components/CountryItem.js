@@ -1,15 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-const CountryItem = props => {
-	const {
-		to,
-		value
-	} = props
-
+const CountryItem = ({to, value}) => {
 	const { name, flag, population, region, capital } = value
 	return (
-
 		<div className="card rounded shadow-overlay">
 			<Link to={to}>
 				<div className="card-image">
