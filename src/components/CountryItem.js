@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom'
 const CountryItem = ({to, value}) => {
 	const { name, flag, population, region, capital } = value
 	return (
-		<div className="card rounded shadow-overlay">
+		<div className="card rounded shadowed">
 			<Link to={to}>
-				<div className="card-image">
+				<div className="card-image shadowed">
 					<img src={flag} alt="Flag" />
 				</div>
 				<div className="card-body">

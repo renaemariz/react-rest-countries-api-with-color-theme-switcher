@@ -14,13 +14,13 @@ const CountryList = () => {
 
 	//set debounce default value first before clearing and adding a new timeout
 	let debounce = 1;
-	const handleOnChange = (input) => {
+	const handleOnChange = (e) => {
+		setInput(e.target.value)
 		clearTimeout(debounce);
-		if (!input) return setUrl(defaultUrl);
+		if (!e.target.value) return setUrl(defaultUrl);
 		debounce = setTimeout(() => {
 				setOption("all")
-				setInput(input)
-				setUrl(`https://restcountries.eu/rest/v2/name/${input}`)
+				setUrl(`https://restcountries.eu/rest/v2/name/${e.target.value}`)
 		}, 2000);
 	}
 
@@ -58,7 +58,7 @@ const CountryList = () => {
 	return (
 		<div className="countrylist-main">
 			<div className="content-header flex">
-				<SearchBar input={input} handleOnChange={handleOnChange} />
+				<SearchBar keyword={input} handleOnChange={handleOnChange} />
 				<Dropdown option={option} handleDropdownOnChange={handleDropdownOnChange} />
 			</div>
 			{
