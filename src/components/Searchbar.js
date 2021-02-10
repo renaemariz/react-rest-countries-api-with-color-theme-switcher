@@ -1,7 +1,6 @@
 import React from 'react'
 
 const SearchBar = ({keyword, handleOnChange}) => {
-	console.log(keyword)
 	return (
 		<div className="searchbar rounded">
 			<button className="searchbar-btn">

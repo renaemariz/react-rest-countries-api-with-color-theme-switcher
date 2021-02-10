@@ -1,7 +1,6 @@
 import React from 'react'
 
 const Dropdown = ({option, handleDropdownOnChange}) => {
-	console.log("Dropdown")
 	return (
 		<div className="dropdown">
 			<select className="dropdown-select rounded shadowed" name="region" id="region" value={option} onChange={(e) => handleDropdownOnChange(e.target.value)}>

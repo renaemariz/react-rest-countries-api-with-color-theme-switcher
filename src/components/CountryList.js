@@ -16,7 +16,6 @@ const CountryList = () => {
 	let debounce = 1;
 	const handleOnChange = (e) => {
 		setInput(e.target.value)
-		console.log(input)
 		clearTimeout(debounce);
 		if (!e.target.value) return setUrl(defaultUrl);
 		debounce = setTimeout(() => {

@@ -3,7 +3,6 @@ import { Link, useParams } from 'react-router-dom'
 import Loading from './Loading'
 
 const CountryDetails = () => {
-	console.log("deets")
 	const { name } = useParams()
 	const [country, setCountry] = useState ([])
 	const [loading, setLoading] = useState (false)
