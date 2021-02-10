@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import Loading from './Loading'
 
 const CountryDetails = () => {
+	console.log("deets")
 	const { name } = useParams()
 	const [country, setCountry] = useState ([])
 	const [loading, setLoading] = useState (false)
@@ -10,11 +11,18 @@ const CountryDetails = () => {
 	const { flag, nativeName, population, region, subregion, capital, topLevelDomain, currencies, languages, borders } = country;
 
 	useEffect(() => {
+		const controller = new AbortController()
+		const { signal } = controller;
+		let errMsg = '';
+
 		setLoading(false);
 
 		const setDetails = async () => {
 			const countryDetails = await fetchCountryDetails();
 			const countryBorders = await fetchBorderCountries(countryDetails.borders);
+			
+			if (errMsg) return
+
 			countryDetails.borders = countryBorders;
 			let details = countryDetails;
 			setCountry(details);
@@ -23,7 +31,7 @@ const CountryDetails = () => {
 
 		const fetchCountryDetails = async () => {
 			try {
-		      const res = await fetch(`https://restcountries.eu/rest/v2/alpha/${name}`);
+		      const res = await fetch(`https://restcountries.eu/rest/v2/alpha/${name}`, {signal: signal});
 		      if (res.ok) {
 		      	 return await res.json()
 		       } else {
@@ -31,6 +39,7 @@ const CountryDetails = () => {
 			  }
 		    } catch (e) {
 		    	console.log(e)
+		    	errMsg = e
 		    }
 		}
 
@@ -39,7 +48,7 @@ const CountryDetails = () => {
 			let borderStr = borders.toString()
 			let newBorder = borderStr.replace(/,/g, ";")
 			try {
-		      const res = await fetch(`https://restcountries.eu/rest/v2/alpha?codes=${newBorder}&fields=name;alpha3Code`);
+		      const res = await fetch(`https://restcountries.eu/rest/v2/alpha?codes=${newBorder}&fields=name;alpha3Code`, {signal: signal});
 		      if (res.ok) {
 		      	 return await res.json();
 		       } else {
@@ -47,16 +56,18 @@ const CountryDetails = () => {
 			  }
 		    } catch (e) {
 		    	console.log(e)
+		    	errMsg = e
 		    }
 		}
-
 		setDetails();
+
+		return () => controller.abort()
 	}, [name])
 
 	return (
 		<div className="country-details-main">
 			<div className="content-header flex">
-				<Link to="/" className="btn back-btn rounded shadow-overlay"> <i className="fas fa-arrow-left"></i> Back </Link> 
+				<Link to="/" className="btn back-btn rounded shadowed"> <i className="fas fa-arrow-left"></i> Back </Link> 
 			</div>
 
 		{
@@ -113,7 +124,7 @@ const CountryDetails = () => {
 										borders.slice(0, 3).map((value, index) => { 
 												return (
 													<li key={index} >
-													<Link className="btn tags-btn rounded shadow-overlay" to={`/country/${value.alpha3Code}`}>
+													<Link className="btn tags-btn rounded shadowed" to={`/country/${value.alpha3Code}`}>
 														<span> {value.name} </span>
 													</Link>
 
