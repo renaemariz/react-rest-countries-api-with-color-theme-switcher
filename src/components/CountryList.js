@@ -47,7 +47,7 @@ const CountryList = () => {
 		      if (res.ok) {
 		      	 let data = await res.json()
 		      	 setCountryList(data)
-				 setLoading(true)
+		      	 setLoading(true)
 		       } else {
 			    throw new Error('Something went wrong')
 			  }
