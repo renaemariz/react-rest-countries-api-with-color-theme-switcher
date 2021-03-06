@@ -7,25 +7,25 @@ const CountryDetails = () => {
 	const [country, setCountry] = useState ([])
 	const [loading, setLoading] = useState (false)
 
-	const { flag, nativeName, population, region, subregion, capital, topLevelDomain, currencies, languages, borders } = country;
+	const { flag, nativeName, population, region, subregion, capital, topLevelDomain, currencies, languages, borders } = country
 
 	useEffect(() => {
 		const controller = new AbortController()
-		const { signal } = controller;
-		let errMsg = '';
+		const { signal } = controller
+		let errMsg = ''
 
-		setLoading(false);
+		setLoading(false)
 
 		const setDetails = async () => {
-			const countryDetails = await fetchCountryDetails();
-			const countryBorders = await fetchBorderCountries(countryDetails.borders);
+			const countryDetails = await fetchCountryDetails()
+			const countryBorders = await fetchBorderCountries(countryDetails.borders)
 			
 			if (errMsg) return
 
-			countryDetails.borders = countryBorders;
-			let details = countryDetails;
-			setCountry(details);
-			setLoading(true);
+			countryDetails.borders = countryBorders
+			let details = countryDetails
+			setCountry(details)
+			setLoading(true)
 		}
 
 		const fetchCountryDetails = async () => {
@@ -44,21 +44,22 @@ const CountryDetails = () => {
 
 		const fetchBorderCountries = async (borders) => {
 			if(borders.length === 0) return
-			let borderStr = borders.toString()
-			let newBorder = borderStr.replace(/,/g, ";")
+
+			let borderCode = borders.toString().replace(/,/g, ";")
+			
 			try {
-		      const res = await fetch(`https://restcountries.eu/rest/v2/alpha?codes=${newBorder}&fields=name;alpha3Code`, {signal: signal});
+		      const res = await fetch(`https://restcountries.eu/rest/v2/alpha?codes=${borderCode}&fields=name;alpha3Code`, {signal: signal});
 		      if (res.ok) {
-		      	 return await res.json();
+		      	 return await res.json()
 		       } else {
-			    throw new Error('Something went wrong');
+			    throw new Error('Something went wrong')
 			  }
 		    } catch (e) {
 		    	console.log(e)
 		    	errMsg = e
 		    }
 		}
-		setDetails();
+		setDetails()
 
 		return () => controller.abort()
 	}, [name])
