@@ -69,11 +69,11 @@
 
   &-image {
     flex: 1;
-    height: 150px;
+    height: 180px;
 
     img {
       object-fit: cover;
-      height: inherit;
+      height: 100%;
     }
   }
   &-content {

@@ -7,7 +7,7 @@ const CountryItem = ({to, value}) => {
 		<div className="card rounded shadowed">
 			<Link to={to}>
 				<div className="card-image shadowed">
-					<img src={flag} alt="Flag" />
+					<img  src={flag} alt="Flag" />
 				</div>
 				<div className="card-body">
 					<p className="card-title"> {name} </p>

@@ -11,24 +11,31 @@ const CountryList = () => {
 	const defaultUrl = `https://restcountries.eu/rest/v2/all`
 	const [url, setUrl] = useState(defaultUrl)
 	const [loading, setLoading] = useState (false)
+	const [debounce, setDebounce] = useState ('')
 
-	//set debounce default value first before clearing and adding a new timeout
-	let debounce = 1;
 	const handleOnChange = (e) => {
 		setInput(e.target.value)
-		clearTimeout(debounce);
-		if (!e.target.value) return setUrl(defaultUrl);
-		debounce = setTimeout(() => {
-				setOption("all")
-				setUrl(`https://restcountries.eu/rest/v2/name/${e.target.value}`)
-		}, 2000);
+
+		//clear running timeout
+		setDebounce(clearTimeout(debounce))
+
+		if (!e.target.value) {
+		  return setUrl(defaultUrl)
+		} else {
+			setDebounce(setTimeout(setSearchParams, 2000, e.target.value))
+		}
+	}
+
+	const setSearchParams = (params) => {
+		setOption("all")
+		setUrl(`https://restcountries.eu/rest/v2/name/${params}`)
 	}
 
 	const handleDropdownOnChange = (option) => {
 		setLoading(false)
 	    setInput('')
 	    setOption(option)
-	   	if(option === "all") return setUrl(defaultUrl);
+	   	if(option === "all" && !input) return setUrl(defaultUrl)
 	    setUrl(`https://restcountries.eu/rest/v2/region/${option}`)
 	}
 
@@ -36,18 +43,17 @@ const CountryList = () => {
 		const fetchCountries = async() => {
 			setLoading(false)
 			try {
-		      const res = await fetch(url);
-		      let data;
+		      const res = await fetch(url)
 		      if (res.ok) {
-		      	 data = await res.json();
-		      	 		setCountryList(data);
+		      	 let data = await res.json()
+		      	 		setCountryList(data)
 						setLoading(true)
 		       } else {
-			    throw new Error('Something went wrong');
+			    throw new Error('Something went wrong')
 			  }
 		    } catch (e) {
-		    	setCountryList('');
-		    	setLoading(true);
+		    	setCountryList('')
+		    	setLoading(true)
 		    	console.log(e)
 		    }
 		}
