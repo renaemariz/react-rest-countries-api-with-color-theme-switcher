@@ -20,7 +20,7 @@ const CountryList = () => {
 		setDebounce(clearTimeout(debounce))
 
 		if (!e.target.value) {
-		  return setUrl(defaultUrl)
+		  	return setUrl(defaultUrl)
 		} else {
 			setDebounce(setTimeout(setSearchParams, 2000, e.target.value))
 		}
@@ -46,8 +46,8 @@ const CountryList = () => {
 		      const res = await fetch(url)
 		      if (res.ok) {
 		      	 let data = await res.json()
-		      	 		setCountryList(data)
-						setLoading(true)
+		      	 setCountryList(data)
+				 setLoading(true)
 		       } else {
 			    throw new Error('Something went wrong')
 			  }
